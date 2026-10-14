@@ -9,7 +9,7 @@ public class Spawner : MonoBehaviour
     void Start()
     {
         // O loop vai rodar 7 vezes, de 1 até 7
-        for (int i = 1; i <= 7; i++)
+        for (int i = 1; i <= 8; i++)
         {
             // Gera uma posição aleatória dentro do círculo
             Vector2 posicaoAleatoria = Random.insideUnitCircle * raioMapa;
