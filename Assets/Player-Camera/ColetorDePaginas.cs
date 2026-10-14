@@ -7,7 +7,7 @@ public class ColetorDePaginas : MonoBehaviour
     public GameObject paginaPrefab;
 
     // A pilha que guarda os números das páginas (Stack = Pilha em inglês)
-    public Stack<int> pilhaDePaginas = new Stack<int>();
+    public PilhaPaginas pilhaDePaginas = new PilhaPaginas(8);
 
     private void OnTriggerEnter2D(Collider2D colisao)
     {
@@ -27,22 +27,4 @@ public class ColetorDePaginas : MonoBehaviour
         }
     }
 
-    private void Update()
-    {
-        // Pop: Solta a página ao carregar no Espaço (se houver alguma na pilha)
-        if (Input.GetKeyDown(KeyCode.Space) && pilhaDePaginas.Count > 0)
-        {
-            // Retira o último número que entrou na pilha
-            int numeroRemovido = pilhaDePaginas.Pop();
-            Debug.Log("Soltou a página " + numeroRemovido + "! Restam: " + pilhaDePaginas.Count);
-
-            // Cria a página novamente no chão, um pouco abaixo do jogador
-            Vector2 posicaoDeSoltar = (Vector2)transform.position + new Vector2(0f, -1.5f);
-            GameObject paginaSolta = Instantiate(paginaPrefab, posicaoDeSoltar, Quaternion.identity);
-
-            // Devolve a identidade correta à página que acabou de ser criada
-            paginaSolta.GetComponent<DadosDaPagina>().numeroDaPagina = numeroRemovido;
-            paginaSolta.name = "Pagina_" + numeroRemovido;
-        }
-    }
 }
