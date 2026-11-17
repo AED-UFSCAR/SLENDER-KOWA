@@ -1,30 +1,31 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 public class ColetorDePaginas : MonoBehaviour
 {
     [Header("Configurações")]
     public GameObject paginaPrefab;
 
-    // A pilha que guarda os números das páginas (Stack = Pilha em inglês)
+    // A pilha que guarda os números das páginas
     public PilhaPaginas pilhaDePaginas = new PilhaPaginas(8);
 
     private void OnTriggerEnter2D(Collider2D colisao)
     {
-        if (colisao.CompareTag("Pagina"))
-        {
-            // Acede ao script da página apanhada para descobrir qual é o seu número
-            DadosDaPagina dados = colisao.GetComponent<DadosDaPagina>();
+        if (!colisao.CompareTag("Pagina")) return;
 
-            if (dados != null)
-            {
-                // Push: Adiciona o número específico no topo da pilha
-                pilhaDePaginas.Push(dados.numeroDaPagina);
-                Debug.Log("Recolheu a página " + dados.numeroDaPagina + "! Total na pilha: " + pilhaDePaginas.Count);
+        // Acessa o script da página coletada para descobrir qual é o seu número
+        DadosDaPagina dados = colisao.GetComponent<DadosDaPagina>();
+        if (dados == null) return;
 
-                Destroy(colisao.gameObject);
-            }
-        }
+        // Push: adiciona o número da página no topo da pilha.
+        // Se a pilha estiver cheia, a página fica no chão (não é destruída e perdida).
+        if (!pilhaDePaginas.Push(dados.numeroDaPagina)) return;
+
+        Debug.Log("Coletou a página " + dados.numeroDaPagina + "! Pilha (topo -> base): " + pilhaDePaginas
+                  + " | Total: " + pilhaDePaginas.Count);
+
+        // Desliga o collider na hora: o Destroy só acontece no fim do frame,
+        // e sem isso a mesma página poderia ser empilhada duas vezes.
+        colisao.enabled = false;
+        Destroy(colisao.gameObject);
     }
-
 }
